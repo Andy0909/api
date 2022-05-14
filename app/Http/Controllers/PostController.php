@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Post;
 
+
 class PostController extends Controller
 {
     /**
@@ -38,6 +39,12 @@ class PostController extends Controller
                 'phone' => request('phone'),
                 'email' => request('email')
             ]);
+            $details = [
+                'title' => '用戶問題回覆',
+                'body' => request('name').' 您好，我們已收到您的信件，我們會盡快幫您解決'
+            ];
+           
+            \Mail::to(request('email'))->send(new \App\Mail\Member_Reply_Mail($details));
         }
         catch (\Exception $e) {
             return $e->getMessage();
@@ -47,7 +54,8 @@ class PostController extends Controller
             'content' => request('content'),
             'name' => request('name'),
             'phone' => request('phone'),
-            'email' => request('email')
+            'email' => request('email'),
+            'message' => 'ok'
         ];
     }
 
