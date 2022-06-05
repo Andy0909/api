@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use Exception;
 
@@ -11,25 +12,37 @@ class AuthController extends Controller
 {
     public function register(Request $request)
     {
-        $form = $this->validate($request, [
+        $validator = Validator::make($request->all(), [
             'name' => 'required|string',
             'email' => 'required|email|unique:users,email',
             'password' => 'required|string|confirmed'
         ]);
+        if($validator->fails()){
+            return response([
+                'message' => $validator->errors()
+            ]);
+        }
         try{
             $user = User::create([
-                'name' => $form['name'],
-                'email' => $form['email'],
-                'password' => Hash::make($form['password'])
+                'name' => $request['name'],
+                'email' => $request['email'],
+                'password' => Hash::make($request['password'])
             ]);
-            $token = $user->createToken('token')->plainTextToken;
+            /*$token = $user->createToken('token')->plainTextToken;
             $response =[
                 'user' => $user,
                 'token' => $token
+            ];*/
+            $response = [
+                'code' => 201,
+                'message' => '註冊成功，趕快手刀登入吧！'
             ];
         }
         catch(Exception $e){
-            return $e->getMessage();
+            $response =[
+                'message' => $e->getMessage()
+            ];
+            return response($response);
         }
         return response($response,201);
     }
@@ -43,26 +56,44 @@ class AuthController extends Controller
         try{
             $user = User::where('email','=',$form['email'])->first();
             if(!$user || !Hash::check($form['password'],$user->password)){
-                return response('登入失敗',401);
+                $response =[
+                    'code' => 401,
+                    'message' => '登入失敗'
+                ];
+                return response($response);
             }
             
             $token = $user->createToken('token')->plainTextToken;
             $response =[
-                'user' => $user,
+                'code' => 201,
+                'user' => $user['name'],
                 'token' => $token
             ];
         }
         catch(Exception $e){
-            return $e->getMessage();
+            $response =[
+                'message' => $e->getMessage()
+            ];
+            return response($response);
         }
         return response($response,201);
     }
 
     public function logout(Request $request)
     {
-        auth()->user()->tokens()->delete();
-        return [
+        try{
+            auth()->user()->tokens()->delete();
+        }
+        catch(Exception $e){
+            $response =[
+                'message' => $e->getMessage()
+            ];
+            return response($response);
+        }
+        $response =[
+            'code' => 201,
             'message' => '您已登出'
         ];
+        return response($response);
     }
 }

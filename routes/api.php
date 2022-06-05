@@ -20,10 +20,10 @@ use App\Http\Controllers\AuthController;
 Route::get('/posts', [PostController::class, 'index']);
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+Route::post('/posts', [PostController::class, 'create']);
 
 //protected
 Route::group(['middleware' => 'auth:sanctum'],function(){
-    Route::post('/posts', [PostController::class, 'create']);
     Route::put('/posts/{id}', [PostController::class, 'update']);
     Route::delete('/posts/{id}', [PostController::class, 'destroy']);
     Route::post('/logout', [AuthController::class, 'logout']);
