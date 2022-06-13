@@ -13,8 +13,14 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('posts', function (Blueprint $table) {
-            $table->string('email')->after('phone')->nullable();
+        Schema::create('products', function (Blueprint $table) {
+            $table->id();
+            $table->string('category_id');
+            $table->string('name');
+            $table->text('content')->nullable();
+            $table->string('price');
+            $table->string('img')->nullable();
+            $table->timestamps();
         });
     }
 
@@ -25,8 +31,6 @@ return new class extends Migration
      */
     public function down()
     {
-        schema::table('posts', function (Blueprint $table) {
-            $table->dropColumn('email');
-        });
+        Schema::dropIfExists('products');
     }
 };

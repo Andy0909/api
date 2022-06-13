@@ -13,8 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('posts', function (Blueprint $table) {
-            $table->string('email')->after('phone')->nullable();
+        Schema::table('categories', function (Blueprint $table) {
+            $table->string('slug')->after('name')->nullable();
         });
     }
 
@@ -25,8 +25,8 @@ return new class extends Migration
      */
     public function down()
     {
-        schema::table('posts', function (Blueprint $table) {
-            $table->dropColumn('email');
+        schema::table('categories', function (Blueprint $table) {
+            $table->dropColumn('slug');
         });
     }
 };

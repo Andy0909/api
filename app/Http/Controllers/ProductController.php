@@ -3,11 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Post;
+use App\Models\Product;
 use Illuminate\Support\Facades\Validator;
 
-
-class PostController extends Controller
+class ProductController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,7 +15,7 @@ class PostController extends Controller
      */
     public function index()
     {
-        return Post::all();
+        return response()->json(Product::where('status','1')->get());
     }
 
     /**
@@ -24,9 +23,9 @@ class PostController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(Request $request)
+    public function create()
     {
-
+        //
     }
 
     /**
@@ -38,42 +37,37 @@ class PostController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'title' => 'required|max:100',
-            'content' => 'required',
-            'name' => 'required|string',
-            'email' => 'required|string'
+            'category_id' => 'required',
+            'name' => 'required|max:100|unique:products,name',
+            'price' => 'required',
+            'quantity' => 'required',
+            'status' => 'required',
         ]);
         if($validator->fails()){
-            return [
+            return response()->json([
                 'message' => $validator->errors()
-            ];
-        }
-        try {
-            Post::create([
-                'title' => request('title'),
-                'content' => request('content'),
-                'name' => request('name'),
-                'phone' => request('phone'),
-                'email' => request('email')
             ]);
-            $details = [
-                'title' => '用戶問題回覆',
-                'body' => request('name').' 您好，我們已收到您的信件，我們會盡快幫您解決'
-            ];
-           
-            \Mail::to(request('email'))->send(new \App\Mail\Member_Reply_Mail($details));
         }
-        catch (\Exception $e) {
-            return $e->getMessage();
+        try{
+            Product::create([
+                'category_id' => request('category_id'),
+                'name' => request('name'),
+                'content' => request('content'),
+                'price' => request('price'),
+                'img' => request('img'),
+                'quantity' => request('quantity'),
+                'status' => request('status')
+            ]);
         }
-        return [
-            'title' => request('title'),
-            'content' => request('content'),
-            'name' => request('name'),
-            'phone' => request('phone'),
-            'email' => request('email'),
-            'message' => 'ok'
-        ];
+        catch(\Exception $e){
+            return response()->json([
+                'message' => $e->getMessage()
+            ]);
+        }
+        return response()->json([
+            'message' => '新建成功',
+            'name' => request('name')
+        ]);
     }
 
     /**
@@ -108,9 +102,9 @@ class PostController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            $post = Post::findOrFail($id);
-            $post->update($request->all());
-            return $post;
+            $product = Product::findOrFail($id);
+            $product->update($request->all());
+            return $product;
         }
         catch (\Exception $e) {
             return $e->getMessage();
@@ -125,12 +119,6 @@ class PostController extends Controller
      */
     public function destroy($id)
     {
-        try {
-            $post = Post::findOrFail($id);
-            return $post->delete();
-        }
-        catch (\Exception $e) {
-            return $e->getMessage();
-        }
+        //
     }
 }

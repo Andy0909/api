@@ -3,11 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Post;
 use Illuminate\Support\Facades\Validator;
+use App\Models\Category;
 
-
-class PostController extends Controller
+class CategoryController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,7 +15,7 @@ class PostController extends Controller
      */
     public function index()
     {
-        return Post::all();
+        return response()->json(Category::where('status','1')->get());
     }
 
     /**
@@ -24,9 +23,9 @@ class PostController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create(Request $request)
+    public function create()
     {
-
+        //
     }
 
     /**
@@ -38,42 +37,29 @@ class PostController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'title' => 'required|max:100',
-            'content' => 'required',
-            'name' => 'required|string',
-            'email' => 'required|string'
+            'name' => 'required|max:100|unique:categories,name',
+            'status' => 'required',
         ]);
         if($validator->fails()){
-            return [
+            return response()->json([
                 'message' => $validator->errors()
-            ];
-        }
-        try {
-            Post::create([
-                'title' => request('title'),
-                'content' => request('content'),
-                'name' => request('name'),
-                'phone' => request('phone'),
-                'email' => request('email')
             ]);
-            $details = [
-                'title' => '用戶問題回覆',
-                'body' => request('name').' 您好，我們已收到您的信件，我們會盡快幫您解決'
-            ];
-           
-            \Mail::to(request('email'))->send(new \App\Mail\Member_Reply_Mail($details));
         }
-        catch (\Exception $e) {
-            return $e->getMessage();
+        try{
+            Category::create([
+                'name' => request('name'),
+                'status' => request('status')
+            ]);
         }
-        return [
-            'title' => request('title'),
-            'content' => request('content'),
-            'name' => request('name'),
-            'phone' => request('phone'),
-            'email' => request('email'),
-            'message' => 'ok'
-        ];
+        catch(\Exception $e){
+            return response()->json([
+                'message' => $e->getMessage()
+            ]);
+        }
+        return response()->json([
+            'message' => '新建成功',
+            'name' => request('name')
+        ]);
     }
 
     /**
@@ -107,14 +93,19 @@ class PostController extends Controller
      */
     public function update(Request $request, $id)
     {
-        try {
-            $post = Post::findOrFail($id);
-            $post->update($request->all());
-            return $post;
+        try{
+            $category = Category::findOrFail($id);
+            $category->update($request->all());
         }
-        catch (\Exception $e) {
-            return $e->getMessage();
+        catch(\Exception $e){
+            return response()->json([
+                'message' => $e->getMessage()
+            ]);
         }
+        return response()->json([
+            'message' => '更新成功',
+            'category' => $category
+        ]);    
     }
 
     /**
@@ -125,12 +116,6 @@ class PostController extends Controller
      */
     public function destroy($id)
     {
-        try {
-            $post = Post::findOrFail($id);
-            return $post->delete();
-        }
-        catch (\Exception $e) {
-            return $e->getMessage();
-        }
+        //
     }
 }
