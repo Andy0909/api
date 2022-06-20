@@ -15,7 +15,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        return response()->json(Product::where('status','1')->get());
+        return response()->json(Product::where('status','1')->paginate(5));
     }
 
     /**
