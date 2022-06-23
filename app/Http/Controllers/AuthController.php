@@ -28,11 +28,6 @@ class AuthController extends Controller
                 'email' => $request['email'],
                 'password' => Hash::make($request['password'])
             ]);
-            /*$token = $user->createToken('token')->plainTextToken;
-            $response =[
-                'user' => $user,
-                'token' => $token
-            ];*/
             $response = [
                 'code' => 201,
                 'message' => '註冊成功，趕快手刀登入吧！'
@@ -66,6 +61,7 @@ class AuthController extends Controller
             $token = $user->createToken('token')->plainTextToken;
             $response =[
                 'code' => 201,
+                'user_id' => $user['id'],
                 'user' => $user['name'],
                 'email' => $user['email'],
                 'token' => $token

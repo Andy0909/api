@@ -6,6 +6,7 @@ use App\Http\Controllers\PostController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\SubscribeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,5 +39,7 @@ Route::group(['middleware' => 'auth:sanctum'],function(){
     Route::put('/posts/{id}', [PostController::class, 'update']);
     Route::delete('/posts/{id}', [PostController::class, 'destroy']);
     Route::post('/logout', [AuthController::class, 'logout']);
+    Route::post('/subscribe', [SubscribeController::class, 'store']);
+    Route::post('/cancel_subscribe', [SubscribeController::class, 'cancel']);
 });
 
