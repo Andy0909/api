@@ -5,9 +5,17 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use Illuminate\Support\Facades\Validator;
+use App\Services\ProductService;
 
 class ProductController extends Controller
 {
+    private $productService;
+
+    public function __construct(ProductService $productService)
+    {
+        $this->productService = $productService;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -58,6 +66,7 @@ class ProductController extends Controller
                 'quantity' => request('quantity'),
                 'status' => request('status')
             ]);
+            $this->productService->productNotify(request('category_id'),request('name'));
         }
         catch(\Exception $e){
             return response()->json([

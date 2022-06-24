@@ -13,9 +13,10 @@ class SubscribeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index($user_id = null)
     {
-        //
+        $subscribe = Subscribe::where('user_id', $user_id)->select('category_id')->get();
+        return response()->json($subscribe);
     }
 
     /**

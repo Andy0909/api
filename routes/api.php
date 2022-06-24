@@ -39,6 +39,8 @@ Route::group(['middleware' => 'auth:sanctum'],function(){
     Route::put('/posts/{id}', [PostController::class, 'update']);
     Route::delete('/posts/{id}', [PostController::class, 'destroy']);
     Route::post('/logout', [AuthController::class, 'logout']);
+
+    Route::get('/subscribe/{user_id?}', [SubscribeController::class, 'index']);
     Route::post('/subscribe', [SubscribeController::class, 'store']);
     Route::post('/cancel_subscribe', [SubscribeController::class, 'cancel']);
 });
