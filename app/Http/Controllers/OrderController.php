@@ -52,7 +52,6 @@ class OrderController extends Controller
                 'price' => request('price'),
                 'status' => request('status')
             ]);
-            //$this->productService->productNotify(request('category_id'),request('name'));
         }
         catch(\Exception $e){
             return response()->json([
