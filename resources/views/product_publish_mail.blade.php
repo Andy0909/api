@@ -8,7 +8,6 @@
 </head>
 <body>
     <h3>{{ $userName }}</h3>
-    <p>{{ $productName }}上架囉！若有興趣趕緊到到官網購買吧！</p>
-    <p>謝謝您對本公司的支持</p>
+    <p>{{ $productName }}上架囉！若有興趣趕緊到官網購買吧！</p>
 </body>
 </html>

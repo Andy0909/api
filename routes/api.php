@@ -7,6 +7,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SubscribeController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\CartController;
 
 /*
 |--------------------------------------------------------------------------
@@ -43,5 +45,9 @@ Route::group(['middleware' => 'auth:sanctum'],function(){
     Route::get('/subscribe/{user_id?}', [SubscribeController::class, 'index']);
     Route::post('/subscribe', [SubscribeController::class, 'store']);
     Route::post('/cancel_subscribe', [SubscribeController::class, 'cancel']);
+
+    Route::post('/orderCreate', [OrderController::class, 'store']);
+
+    Route::post('/CartCreate', [CartController::class, 'store']);
 });
 
