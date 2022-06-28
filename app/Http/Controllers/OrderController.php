@@ -60,7 +60,6 @@ class OrderController extends Controller
         }
         return response()->json([
             'code' => '201',
-            'message' => '訂單建立成功',
             'order_id' => $order->id
         ]);
     }

@@ -5,9 +5,18 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\Cart;
+use App\Services\ProductService;
+use Illuminate\Support\Facades\DB;
 
 class CartController extends Controller
 {
+    private $productService;
+
+    public function __construct(ProductService $productService)
+    {
+        $this->productService = $productService;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -45,14 +54,28 @@ class CartController extends Controller
             ]);
         }
         try{
+            DB::beginTransaction();
             foreach($request['cart'] as $value){
-                $cart = Cart::create([
-                    'order_id' => $value['order_id'],
-                    'user_id' => $value['user_id'],
-                    'product_id' => $value['product_id'],
-                    'quantity' => $value['quantity']
-                ]);
+                if(isset($value['order_id'])){
+                    $updateQuantity = $this->productService->updateQuantity($value['product_id'],$value['quantity']);
+                    if($updateQuantity){
+                        $cart = Cart::create([
+                            'order_id' => $value['order_id'],
+                            'user_id' => $value['user_id'],
+                            'product_id' => $value['product_id'],
+                            'quantity' => $value['quantity']
+                        ]);
+                    }
+                    else{
+                        DB::rollback();
+                        return response()->json([
+                            'code' => '500',
+                            'message' => '商品數量不足'
+                        ]);
+                    }
+                }
             }
+            DB::commit();
         }
         catch(\Exception $e){
             return response()->json([
@@ -60,8 +83,8 @@ class CartController extends Controller
             ]);
         }
         return response()->json([
-            'message' => '購物車建立成功',
-            'order_id' => $cart->id
+            'code' => '200',
+            'message' => '訂單建立成功',
         ]);
     }
 
