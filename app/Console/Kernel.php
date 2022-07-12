@@ -2,8 +2,13 @@
 
 namespace App\Console;
 
+use App\Models\Cart;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use App\Models\Order;
+use Illuminate\Support\Facades\Log;
+
+use function PHPUnit\Framework\isEmpty;
 
 class Kernel extends ConsoleKernel
 {
@@ -15,7 +20,9 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
+        /*$schedule->call(function () {
+            Log::info('成功排程');
+        })->everyMinute();*/
     }
 
     /**

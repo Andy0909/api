@@ -35,6 +35,11 @@ Route::put('/categoryUpdate/{id}', [CategoryController::class, 'update']);
 Route::get('/products', [ProductController::class, 'index']);
 Route::post('/productCreate', [ProductController::class, 'store']);
 Route::put('/productUpdate/{id}', [ProductController::class, 'update']);
+Route::get('/categoryProduct/{slug?}', [ProductController::class, 'show']);
+
+Route::get('/order/{id?}', [OrderController::class, 'index']);
+
+
 
 //protected
 Route::group(['middleware' => 'auth:sanctum'],function(){
